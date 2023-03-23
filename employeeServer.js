@@ -43,69 +43,107 @@ let connData = {
 
 let connection = mysql.createConnection(connData);
 
-
-app.get("/employees", function(req,res, next) {
+app.get("/employees", function(req,res,next) {
     console.log("Request Query : ",req.query)
     let department = req.query.department ? req.query.department : false ;
     let designation = req.query.designation ? req.query.designation : false;
     let gender = req.query.gender ? req.query.gender : false;
-    if(department&&designation&&gender) {
-        let sql1 = `SELECT * FROM employees WHERE department=$1 AND designation=$2 AND gender=$3`;
-        client.query(sql1, [department,designation,gender], function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
-    else if (department&&designation&&!gender) {
-        let sql1 = `SELECT * FROM employees WHERE department=$1 AND designation=$2`;
-        client.query(sql1, [department,designation], function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
-    else if (department&&!designation&&gender) {
-        let sql1 = `SELECT * FROM employees WHERE department=$1 AND gender=$2`;
-        client.query(sql1, [department,gender], function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
-    else if (!department&&designation&&gender) {
-        let sql1 = `SELECT * FROM employees WHERE designation=$1 AND gender=$2`;
-        client.query(sql1, [designation,gender], function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
-    else if (department&&!designation&&!gender) {
-        let sql1 = `SELECT * FROM employees WHERE department=$1`;
-        client.query(sql1, [department], function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
-    else if (!department&&designation&&!gender) {
-        let sql1 = `SELECT * FROM employees WHERE designation=$1`;
-        client.query(sql1, [designation], function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
-    else if (!department&&!designation&&gender) {
-        let sql1 = `SELECT * FROM employees WHERE gender=$1`;
-        client.query(sql1, [gender], function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
-    else {
-        let sql1 = `SELECT * FROM employees`;
-        client.query(sql1, function(err, result) {
-            if(err) console.log("designation : ",err);
-            else res.send(result.rows);
-        });
-    }
+    let sql1 = `SELECT * FROM employees WHERE department=$1`;
+    let sql2 = `SELECT * FROM employees WHERE designation=$1`;
+    let sql3 = `SELECT * FROM employees WHERE gender=$1`;
+    let sql = `SELECT * FROM employees`;
+    department 
+        ? (
+            client.query(sql1, [department], function(err, result) {
+                if(err) res.send(err);
+                else console.log("Done");
+            })
+        )
+        : designation
+        ? (
+            client.query(sql2, [designation], function(err, result) {
+                if(err) res.send(err);
+                else console.log("Done");
+            })
+        )
+        : gender 
+        ? (
+            client.query(sql3, [gender], function(err, result) {
+                if(err) res.send(err);
+                else console.log("Done");
+            })
+        ) 
+        : (
+            client.query(sql, function(err, result) {
+                if(err) res.send(err);
+                else res.send(result);
+            })
+        )
 });
+
+
+// app.get("/employees", function(req,res, next) {
+//     console.log("Request Query : ",req.query)
+//     let department = req.query.department ? req.query.department : false ;
+//     let designation = req.query.designation ? req.query.designation : false;
+//     let gender = req.query.gender ? req.query.gender : false;
+//     if(department&&designation&&gender) {
+//         let sql1 = `SELECT * FROM employees WHERE department=$1 AND designation=$2 AND gender=$3`;
+//         client.query(sql1, [department,designation,gender], function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+//     else if (department&&designation&&!gender) {
+//         let sql1 = `SELECT * FROM employees WHERE department=$1 AND designation=$2`;
+//         client.query(sql1, [department,designation], function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+//     else if (department&&!designation&&gender) {
+//         let sql1 = `SELECT * FROM employees WHERE department=$1 AND gender=$2`;
+//         client.query(sql1, [department,gender], function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+//     else if (!department&&designation&&gender) {
+//         let sql1 = `SELECT * FROM employees WHERE designation=$1 AND gender=$2`;
+//         client.query(sql1, [designation,gender], function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+//     else if (department&&!designation&&!gender) {
+//         let sql1 = `SELECT * FROM employees WHERE department=$1`;
+//         client.query(sql1, [department], function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+//     else if (!department&&designation&&!gender) {
+//         let sql1 = `SELECT * FROM employees WHERE designation=$1`;
+//         client.query(sql1, [designation], function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+//     else if (!department&&!designation&&gender) {
+//         let sql1 = `SELECT * FROM employees WHERE gender=$1`;
+//         client.query(sql1, [gender], function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+//     else {
+//         let sql1 = `SELECT * FROM employees`;
+//         client.query(sql1, function(err, result) {
+//             if(err) console.log("designation : ",err);
+//             else res.send(result.rows);
+//         });
+//     }
+// });
 
 app.get("/employee/code/:code", function(req,res, next) {
     let code = req.params.code;
